@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { 
   LayoutDashboard, Building, FileQuestion, Star, BookOpen, 
   Send, TimerIcon, Users, Shield, LogOut, X, ChevronDown,
-  Newspaper
+  Newspaper, Settings
 } from "lucide-react"
 import { useSidebar } from "./SidebarProvider"
 import { Button } from "@/components/ui/button"
@@ -20,20 +20,22 @@ import {
 } from "@/components/ui/dialog"
 
 const menuItems = [
-  { name: "لوحة التحكم", icon: LayoutDashboard, href: "/" },
-  { name: "العقارات", icon: Building, href: "/category" },
+  { name: "الرئيسية", icon: LayoutDashboard, href: "/" },
+  { name: "إدارة العقارات", icon: Building, href: "/category" },
   { name: "الأسئلة الشائعة", icon: FileQuestion, href: "/faq" },
-  { name: "آراء العملاء", icon: Star, href: "/reviews" },
+  { name: "تقييمات العملاء", icon: Star, href: "/reviews" },
   { name: "المدونة", icon: BookOpen, href: "/blog" },
   { name: "المشتركين", icon: Newspaper, href: "/subscribers" },
-  { name: "المهتمين بالعقار", icon: Send, href: "/intersted" },
-  { name: "الاستشارات المحجوزة", icon: TimerIcon, href: "/consultation" },
+  { name: "طلبات العملاء", icon: Send, href: "/intersted" },
+  { name: "مواعيد الاستشارات", icon: TimerIcon, href: "/consultation" },
 ]
 
 const userManagementItems = [
-  { name: "الأدوار", icon: Shield, href: "/roles" },
-  { name: "اضافة مستخدم", icon: Users, href: "/users" },
+  { name: "الصلاحيات", icon: Shield, href: "/roles" },
+  { name: "إدارة المستخدمين", icon: Users, href: "/users" },
+  { name: "الإعدادات", icon: Settings, href: "/settings" },
 ]
+
 
 export function Sidebar() {
   const pathname = usePathname()
@@ -72,31 +74,34 @@ export function Sidebar() {
   return (
     <>
       <aside className={`
-    
-        fixed top-0 right-0 h-full w-72
-        bg-[#20284DE5]
-        text-white shadow-xl
-        transition-transform duration-300 ease-out z-50
+        fixed top-0 right-0 h-full w-80
+        bg-gradient-to-b from-[#34222E] to-[#34222E]/95
+        text-[#EFEDEA] shadow-2xl
+        transition-all duration-300 ease-out z-50
         ${isOpen ? "translate-x-0" : "translate-x-full"}
+        font-arabic
       `}>
-        <div className="flex flex-col h-full overflow-y-auto scrollbar-hide">
-          <div className="p-6 border-b border-[#20284DE5]">
+        <div className="flex flex-col h-full">
+          <div className="p-8 border-b border-[#EFEDEA]/10 bg-[#34222E]">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/Group.svg"
-                  alt="Company Logo"
-                  width={40}
-                  height={40}
-                  className="h-10 w-auto"
-                />
-                <span className="text-lg font-semibold">تأسيس البناء</span>
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <Image
+                    src="/logo.jpg"
+                    alt="RAF Logo"
+                    width={50}
+                    height={50}
+                    className="rounded-xl shadow-lg ring-2 ring-[#C48765]/20"
+                  />
+                  <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-[#C48765] rounded-full"></div>
+                </div>
+                <span className="text-2xl font-bold tracking-wider text-[#EFEDEA]">RAF</span>
               </div>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={toggle}
-                className="text-white hover:bg-[#AA9554] transition-colors"
+                className="text-[#EFEDEA] hover:bg-[#C48765] transition-all rounded-lg"
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -104,98 +109,90 @@ export function Sidebar() {
           </div>
 
           <nav className="flex-1 px-4 py-6 overflow-y-auto">
-            <ul className="space-y-1.5">
+            <ul className="space-y-2">
               {menuItems.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
                     className={`
-                      flex items-center gap-3 px-4 py-3 rounded-lg
-                      transition-colors duration-200
+                      flex items-center gap-4 px-5 py-3.5 rounded-xl
+                      transition-all duration-200 group
                       ${pathname === item.href 
-                        ? "bg-[#20284DE5] text-white" 
-                        : "text-blue-100 hover:bg-[#AA9554] hover:text-white"}
+                        ? "bg-[#C48765] text-[#EFEDEA] shadow-lg" 
+                        : "text-[#EFEDEA]/80 hover:bg-[#C48765]/10 hover:text-[#EFEDEA]"}
                     `}
                   >
-                    <item.icon className="h-5 w-5" />
-                    <span>{item.name}</span>
+                    <item.icon className={`h-5 w-5 transition-transform group-hover:scale-110 ${
+                      pathname === item.href ? "text-[#EFEDEA]" : "text-[#C48765]"
+                    }`} />
+                    <span className="font-medium text-[15px]">{item.name}</span>
                   </Link>
                 </li>
               ))}
 
-              <li className="mt-6 pt-6 border-t border-blue-800">
-                <button
-                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                  className={`
-                    w-full flex items-center justify-between px-4 py-3 rounded-lg
-                    transition-colors duration-200
-                    ${pathname.includes('/users') 
-                      ? "bg-[#20284DE5] text-white" 
-                      : "text-blue-100 hover:bg-[#AA9554] hover:text-white"}
-                  `}
-                >
-                  <div className="flex items-center gap-3">
-                    <Users className="h-5 w-5" />
-                    <span>إدارة المستخدمين</span>
-                  </div>
-                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {isUserDropdownOpen && (
-                  <ul className="mt-2 mr-4 space-y-1">
-                    {userManagementItems.map((item) => (
-                      <li key={item.name}>
-                        <Link
-                          href={item.href}
-                          className={`
-                            flex items-center gap-3 px-4 py-2 rounded-lg
-                            transition-colors duration-200
-                            ${pathname === item.href 
-                              ? "bg-[#AA9554] text-white" 
-                              : "text-blue-100 hover:bg-[#AA9554] hover:text-white"}
-                          `}
-                        >
-                          <item.icon className="h-4 w-4" />
-                          <span>{item.name}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              <li className="mt-8 pt-6 border-t border-[#EFEDEA]/10">
+                <div className="px-4 mb-4 text-sm text-[#EFEDEA]/60 font-medium">
+                  إعدادات النظام
+                </div>
+                {userManagementItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`
+                      flex items-center gap-4 px-5 py-3.5 rounded-xl mb-2
+                      transition-all duration-200 group
+                      ${pathname === item.href 
+                        ? "bg-[#C48765] text-[#EFEDEA] shadow-lg" 
+                        : "text-[#EFEDEA]/80 hover:bg-[#C48765]/10 hover:text-[#EFEDEA]"}
+                    `}
+                  >
+                    <item.icon className={`h-5 w-5 transition-transform group-hover:scale-110 ${
+                      pathname === item.href ? "text-[#EFEDEA]" : "text-[#C48765]"
+                    }`} />
+                    <span className="font-medium text-[15px]">{item.name}</span>
+                  </Link>
+                ))}
               </li>
             </ul>
           </nav>
 
-          <div className="p-4 border-t border-[#20284DE5]">
+          <div className="p-4 bg-[#34222E]/50">
             <button
               onClick={() => setShowLogoutDialog(true)}
               className="
-                w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                text-red-300 hover:bg-red-900/20 hover:text-red-200
-                transition-colors duration-200
+                w-full flex items-center gap-4 px-5 py-3.5 rounded-xl
+                text-[#EFEDEA]/90 hover:bg-[#C48765]/10
+                transition-all duration-200 group
               "
             >
-              <LogOut className="h-5 w-5" />
-              <span>تسجيل الخروج</span>
+              <LogOut className="h-5 w-5 text-[#C48765] group-hover:scale-110 transition-transform" />
+              <span className="font-medium">تسجيل الخروج</span>
             </button>
           </div>
         </div>
       </aside>
 
       <Dialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="bg-[#EFEDEA] rounded-xl">
           <DialogHeader>
-            <DialogTitle>تأكيد تسجيل الخروج</DialogTitle>
-            <DialogDescription>
-              هل أنت متأكد من رغبتك في تسجيل الخروج؟
+            <DialogTitle className="text-[#34222E] text-xl">تأكيد تسجيل الخروج</DialogTitle>
+            <DialogDescription className="text-[#34222E]/80">
+              هل أنت متأكد من تسجيل الخروج من النظام؟
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setShowLogoutDialog(false)}>
+          <DialogFooter className="gap-3 mt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowLogoutDialog(false)}
+              className="hover:bg-[#34222E]/5"
+            >
               إلغاء
             </Button>
-            <Button variant="destructive" onClick={handleLogout}>
-              تسجيل الخروج
+            <Button 
+              className="bg-[#C48765] hover:bg-[#C48765]/90" 
+              onClick={handleLogout}
+            >
+              تأكيد
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -203,7 +200,7 @@ export function Sidebar() {
 
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300" 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300" 
           onClick={toggle}
         />
       )}
