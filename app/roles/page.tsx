@@ -69,7 +69,7 @@ function UsersListContent() {
           return;
         }
   
-        const response = await fetch("https://tasis-al-bina.onrender.com/auth/users", {
+        const response = await fetch("https://raf-backend.vercel.app/auth/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -124,7 +124,7 @@ function UsersListContent() {
     try {
       const token = localStorage.getItem('token')
       await axios.put(
-        `https://tasis-al-bina.onrender.com/auth/update/${editingUser?._id}`,
+        `https://raf-backend.vercel.app/auth/update/${editingUser?._id}`,
         data,
         {
           headers: {
@@ -168,7 +168,7 @@ function UsersListContent() {
       
       try {
         const token = localStorage.getItem('token')
-        await axios.delete(`https://tasis-al-bina.onrender.com/auth/delete/${UserToDelete}`, {
+        await axios.delete(`https://raf-backend.vercel.app/auth/delete/${UserToDelete}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

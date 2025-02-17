@@ -52,7 +52,7 @@ export function Sidebar() {
         return
       }
 
-      const response = await fetch("https://tasis-al-bina.onrender.com/auth/logout", {
+      const response = await fetch("https://raf-backend.vercel.app/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

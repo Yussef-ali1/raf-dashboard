@@ -31,7 +31,7 @@ export default function FAQ() {
 
   const fetchFaqs = async () => {
     try {
-      const response = await fetch('https://tasis-al-bina.onrender.com/question/')
+      const response = await fetch('https://raf-backend.vercel.app/question/')
       const data = await response.json()
       setFaqs(data.questionData)
     } catch (error) {
@@ -52,7 +52,7 @@ export default function FAQ() {
         return
       }
 
-      const response = await fetch(`https://tasis-al-bina.onrender.com/question/${faqToDelete}`, {
+      const response = await fetch(`https://raf-backend.vercel.app/question/${faqToDelete}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

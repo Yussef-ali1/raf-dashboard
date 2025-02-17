@@ -261,7 +261,7 @@ export default function AddCategory() {
         formData.append('image', data.Image)
       }
 
-      const response = await fetch("https://tasis-al-bina.onrender.com/category/create", {
+      const response = await fetch("https://raf-backend.vercel.app/category/create", {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: formData

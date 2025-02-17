@@ -140,7 +140,7 @@ export default function AddReview() {
       const token = localStorage.getItem("token")
       if (!token) throw new Error(lang === "ar" ? "يرجى تسجيل الدخول أولاً" : "Please login first")
 
-      const response = await fetch("https://tasis-al-bina.onrender.com/review/create", {
+      const response = await fetch("https://raf-backend.vercel.app/review/create", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData

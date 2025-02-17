@@ -64,7 +64,7 @@ export default function EditFAQ() {
   useEffect(() => {
     const fetchFAQData = async () => {
       try {
-        const response = await fetch(`https://tasis-al-bina.onrender.com/question/getOne/${params.id}`, {
+        const response = await fetch(`https://raf-backend.vercel.app/question/getOne/${params.id}`, {
           headers: { 
             Authorization: `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
@@ -143,7 +143,7 @@ export default function EditFAQ() {
         lang: lang
       }
 
-      const response = await fetch(`https://tasis-al-bina.onrender.com/question/update/${params.id}`, {
+      const response = await fetch(`https://raf-backend.vercel.app/question/update/${params.id}`, {
         method: "PUT",
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("token")}`,

@@ -53,15 +53,15 @@ export default function Category() {
   
       switch (selectedLang) {
         case 'ar':
-          endpoint = `https://tasis-al-bina.onrender.com/category/getAllCategoryAR`;
+          endpoint = `https://raf-backend.vercel.app/category/getAllCategoryAR`;
           break;
         case 'en':
-          endpoint = `https://tasis-al-bina.onrender.com/category/getAllCategory`;
+          endpoint = `https://raf-backend.vercel.app/category/getAllCategory`;
           break;
         case 'all':
           const [arResponse, enResponse] = await Promise.all([
-            axios.get(`https://tasis-al-bina.onrender.com/category/getAllCategoryAR`),
-            axios.get(`https://tasis-al-bina.onrender.com/category/getAllCategoryEN`)
+            axios.get(`https://raf-backend.vercel.app/category/getAllCategoryAR`),
+            axios.get(`https://raf-backend.vercel.app/category/getAllCategoryEN`)
           ]);
   
           const combinedCategories = [...arResponse.data.category, ...enResponse.data.category];
@@ -96,7 +96,7 @@ export default function Category() {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`https://tasis-al-bina.onrender.com/category/delete/${id}`)
+      await axios.delete(`https://raf-backend.vercel.app/category/delete/${id}`)
       setCategories(prev => prev.filter(cat => cat._id !== id))
       toast({
         title: "تم الحذف بنجاح",

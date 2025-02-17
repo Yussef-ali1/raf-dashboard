@@ -67,13 +67,13 @@ export default function NotificationsPage() {
     try {
       const token = localStorage.getItem("token")
       const [emailResponse, interestedResponse,consultaionsResponse] = await Promise.all([
-        fetch("https://tasis-al-bina.onrender.com/newsletter/getAllLastHour", {
+        fetch("https://raf-backend.vercel.app/newsletter/getAllLastHour", {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        fetch("https://tasis-al-bina.onrender.com/interested/getAllLastOneHour", {
+        fetch("https://raf-backend.vercel.app/interested/getAllLastOneHour", {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        fetch("https://tasis-al-bina.onrender.com/consultation/getAllLastOneHour", {
+        fetch("https://raf-backend.vercel.app/consultation/getAllLastOneHour", {
           headers: { Authorization: `Bearer ${token}` }
         })
       ])

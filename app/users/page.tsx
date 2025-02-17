@@ -65,7 +65,7 @@ export default function UsersPage() {
     setIsSendingCode(true)
   
     try {
-      const response = await fetch("https://tasis-al-bina.onrender.com/auth/sendEmailNew", {
+      const response = await fetch("https://raf-backend.vercel.app/auth/sendEmailNew", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export default function UsersPage() {
         return
       }
   
-      const response = await fetch("https://tasis-al-bina.onrender.com/auth/add", {
+      const response = await fetch("https://raf-backend.vercel.app/auth/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
