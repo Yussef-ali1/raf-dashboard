@@ -44,7 +44,7 @@ export default function Blog() {
 
   const fetchBlogPosts = async () => {
     try {
-      const response = await fetch('https://raf-backend.vercel.app/blog/?page=1&size=6', {
+      const response = await fetch('https://raf-backend.vercel.app/blog/getAllBlogsforDashboard', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
