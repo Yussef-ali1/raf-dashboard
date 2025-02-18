@@ -17,12 +17,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'tasis-al-bina.onrender.com',
+        hostname: 'raf-backend.vercel.app/',
       },
     ],
   },
   env: {
-    API_BASE_URL: 'https://tasis-al-bina.onrender.com',
+    API_BASE_URL: 'https://raf-backend.vercel.app/',
   },
   experimental: {
     webpackBuildWorker: true,

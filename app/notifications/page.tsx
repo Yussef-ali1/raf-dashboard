@@ -50,7 +50,7 @@ export default function NotificationsPage() {
   useEffect(() => {
     fetchData()
 
-    // const socket = io("https://tasis-al-bina.onrender.com", {
+    // const socket = io("https://raf-backend.vercel.app", {
     //   reconnection: true,
     //   timeout: 10000
     // })
