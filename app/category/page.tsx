@@ -53,15 +53,15 @@ export default function Category() {
   
       switch (selectedLang) {
         case 'ar':
-          endpoint = `https://raf-backend.vercel.app/category/getAllCategoryAR`;
+          endpoint = `https://raf-backend.vercel.app/category/getAllCategoryARForDashboard`;
           break;
         case 'en':
-          endpoint = `https://raf-backend.vercel.app/category/getAllCategory`;
+          endpoint = `https://raf-backend.vercel.app/category/getAllCategoryENForDashboard`;
           break;
         case 'all':
           const [arResponse, enResponse] = await Promise.all([
-            axios.get(`https://raf-backend.vercel.app/category/getAllCategoryAR`),
-            axios.get(`https://raf-backend.vercel.app/category/getAllCategoryEN`)
+            axios.get(`https://raf-backend.vercel.app/category/getAllCategoryARForDashboard`),
+            axios.get(`https://raf-backend.vercel.app/category/getAllCategoryENForDashboard`)
           ]);
   
           const combinedCategories = [...arResponse.data.category, ...enResponse.data.category];
