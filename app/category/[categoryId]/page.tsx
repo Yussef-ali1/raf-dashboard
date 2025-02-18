@@ -135,7 +135,7 @@ export default function UnitsPage() {
           </div>
 
           <Link href={`/category/${categoryId}/add`}>
-            <Button className="bg-[#20284DE5] hover:bg-[#AA9554] text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 rounded-lg px-6 py-2">
+            <Button className="bg-[#321b22E5] hover:bg-[#c48765] text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 rounded-lg px-6 py-2">
               <span className="font-medium ">إضافة وحدة جديدة</span>
             </Button>
           </Link>

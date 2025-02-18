@@ -112,7 +112,7 @@ export default function Blog() {
           </div>
   
           <CardHeader className="space-y-2 flex-1">
-            <CardTitle className="text-xl font-bold line-clamp-2 hover:text-[#20284D] transition-colors">
+            <CardTitle className="text-xl font-bold line-clamp-2 hover:text-[#321b22] transition-colors">
               {post.title}
             </CardTitle>
             <CardDescription className="flex items-center text-gray-500 text-sm">
@@ -130,7 +130,7 @@ export default function Blog() {
               {post.Keywords.slice(0, 3).map((keyword, index) => (
                 <span 
                   key={index} 
-                  className="inline-flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-[#20284D] hover:text-white transition-colors"
+                  className="inline-flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-[#321b22] hover:text-white transition-colors"
                 >
                   <Tag className="w-3 h-3 ml-1" />
                   {keyword}
@@ -152,7 +152,7 @@ export default function Blog() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="bg-[#20284DE5] text-white hover:bg-[#AA9554] transition-colors duration-300"
+                  className="bg-[#321b22E5] text-white hover:bg-[#c48765] transition-colors duration-300"
                 >
                   <Edit className="h-4 w-4 ml-2" />
                   تعديل

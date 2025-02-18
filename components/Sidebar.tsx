@@ -33,7 +33,7 @@ const menuItems = [
 const userManagementItems = [
   { name: "الصلاحيات", icon: Shield, href: "/roles" },
   { name: "إدارة المستخدمين", icon: Users, href: "/users" },
-  { name: "الإعدادات", icon: Settings, href: "/settings" },
+  { name: "الإعدادات", icon: Settings, href: "/users/settings" },
 ]
 
 

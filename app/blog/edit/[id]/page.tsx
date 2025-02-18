@@ -270,7 +270,7 @@ export default function EditBlogPost() {
                 <Button
                   type="submit"
                   disabled={state.isLoading[articleLanguage]}
-                  className="w-full bg-[#20284DE5] hover:bg-[#AA9554] text-white"
+                  className="w-full bg-[#321b22E5] hover:bg-[#c48765] text-white"
 
                 >
                   {state.isLoading[articleLanguage] ? (
