@@ -1,12 +1,11 @@
-
 "use client"
 import { useState, useEffect, Suspense } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { toast } from 'react-toastify'
+import { toast, Toaster } from 'react-hot-toast'
 import axios from 'axios'
-import { Loader2, Lock, KeyRound, ArrowRight, RefreshCw } from 'lucide-react'
+import { Lock, KeyRound, Eye, EyeOff, Building2 } from 'lucide-react'
 import Image from 'next/image'
 
 export default function ResetPassword() {
@@ -83,25 +82,29 @@ export default function ResetPassword() {
     }
   }
 
+  const handleShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setShowPassword(!showPassword)
+  }
+
   return (
-    <Suspense>
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
-      <div className="w-full max-w-md p-6">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-8">
-          <div className="text-center">
-            <div className="relative w-24 h-24 mx-auto mb-4">
-              <Image
-                src="/logo.svg"
-                alt="Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900">
+    <main className="min-h-screen relative bg-[#1a1c23] flex items-center justify-center p-4 overflow-hidden">
+      <Toaster position="top-center" reverseOrder={false} />
+      
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-5" />
+      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-[#C48765]/20 to-[#34222E]/20 blur-3xl transform -skew-y-12" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-[#C48765]/10 to-transparent blur-3xl rounded-full" />
+      <div className="absolute top-1/3 left-1/4 w-48 h-48 bg-gradient-to-br from-[#34222E]/10 to-transparent blur-2xl rounded-full" />
+      
+      <div className="w-full max-w-md p-6 relative">
+        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(196,135,101,0.15)] p-8 space-y-8 border border-white/20">
+          <div className="text-center relative">
+       
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-[#34222E] to-[#C48765] bg-clip-text text-transparent">
               إعادة تعيين كلمة المرور
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-3 text-gray-600">
               أدخل الرمز المرسل إلى بريدك الإلكتروني
             </p>
           </div>
@@ -109,58 +112,72 @@ export default function ResetPassword() {
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[#34222E] mb-1.5">
                   رمز التحقق
                 </label>
-                <div className="relative">
+                <div className="relative group">
                   <input
                     type="text"
                     maxLength={6}
                     {...formik.getFieldProps('code')}
                     className={`
-                      w-full px-4 py-3 pr-10 rounded-lg border text-center tracking-widest
+                      w-full px-4 py-3 pr-10 rounded-lg border bg-white/80 text-center tracking-widest
                       ${formik.touched.code && formik.errors.code 
                         ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                        : 'border-gray-300 focus:ring-primary focus:border-primary'}
-                      transition-all duration-200
+                        : 'border-gray-200 focus:ring-[#C48765] focus:border-[#C48765]'}
+                      transition-all duration-200 placeholder:text-gray-400
+                      group-hover:border-[#C48765]/50 group-hover:bg-white
                     `}
                     placeholder="000000"
+                    dir="ltr"
                   />
-                  <KeyRound className="absolute top-3 right-3 h-5 w-5 text-gray-400" />
+                  <KeyRound className="absolute top-3 right-3 h-5 w-5 text-gray-400 group-hover:text-[#C48765] transition-colors" />
                 </div>
                 {formik.touched.code && formik.errors.code && (
-                  <p className="mt-1 text-sm text-red-600">{formik.errors.code}</p>
+                  <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 bg-red-600 rounded-full" />
+                    {formik.errors.code}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[#34222E] mb-1.5">
                   كلمة المرور الجديدة
                 </label>
-                <div className="relative">
+                <div className="relative group">
                   <input
                     type={showPassword ? "text" : "password"}
                     {...formik.getFieldProps('newPassword')}
                     className={`
-                      w-full px-4 py-3 pr-10 rounded-lg border
+                      w-full px-4 py-3 pr-10 rounded-lg border bg-white/80
                       ${formik.touched.newPassword && formik.errors.newPassword 
                         ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                        : 'border-gray-300 focus:ring-primary focus:border-primary'}
-                      transition-all duration-200
+                        : 'border-gray-200 focus:ring-[#C48765] focus:border-[#C48765]'}
+                      transition-all duration-200 placeholder:text-gray-400
+                      group-hover:border-[#C48765]/50 group-hover:bg-white
                     `}
                     placeholder="••••••••"
+                    dir="rtl"
                   />
-                  <Lock className="absolute top-3 right-3 h-5 w-5 text-gray-400" />
+                  <Lock className="absolute top-3 right-3 h-5 w-5 text-gray-400 group-hover:text-[#C48765] transition-colors" />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute top-3 left-3 text-gray-400 hover:text-gray-600"
+                    onClick={handleShowPassword}
+                    className="absolute top-3 left-3 text-gray-400 hover:text-[#C48765] transition-colors focus:outline-none"
                   >
-                    {showPassword ? "إخفاء" : "إظهار"}
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
                   </button>
                 </div>
                 {formik.touched.newPassword && formik.errors.newPassword && (
-                  <p className="mt-1 text-sm text-red-600">{formik.errors.newPassword}</p>
+                  <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 bg-red-600 rounded-full" />
+                    {formik.errors.newPassword}
+                  </p>
                 )}
               </div>
             </div>
@@ -169,43 +186,66 @@ export default function ResetPassword() {
               type="submit"
               disabled={isLoading}
               className={`
-                w-full py-3 px-4 rounded-lg font-medium text-white
-                bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 
-                focus:ring-offset-2 focus:ring-primary
-                transition-all duration-200
-                flex items-center justify-center
-                ${isLoading ? 'opacity-80 cursor-not-allowed' : ''}
+                w-full py-3.5 px-4 rounded-lg font-medium text-white
+                bg-gradient-to-r from-[#C48765] to-[#E2A081] 
+                hover:from-[#B37654] hover:to-[#D19070]
+                focus:outline-none focus:ring-2 
+                focus:ring-offset-2 focus:ring-[#C48765]
+                transition-all duration-300 transform hover:scale-[1.02]
+                disabled:opacity-80 disabled:cursor-not-allowed
+                shadow-lg shadow-[#C48765]/20
+                relative overflow-hidden group
               `}
             >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
               {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-2" />
+                  جاري المعالجة...
+                </div>
               ) : (
-                <>
-                  تغيير كلمة المرور
-                  <ArrowRight className="mr-2 h-5 w-5" />
-                </>
+                "تغيير كلمة المرور"
               )}
             </button>
 
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={handleResendCode}
-                disabled={!canResend || isLoading}
-                className={`
-                  inline-flex items-center text-primary hover:text-primary/80
-                  transition-colors duration-200
-                  ${(!canResend || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}
-                `}
-              >
-                <RefreshCw className={`mr-2 h-4 w-4 ${timer > 0 ? 'animate-spin' : ''}`} />
-                {timer > 0 ? `إعادة الإرسال خلال ${timer} ثانية` : 'إعادة إرسال الرمز'}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleResendCode}
+              disabled={!canResend || isLoading}
+              className={`
+                w-full mt-4 py-2 px-4 rounded-lg font-medium
+                text-[#C48765] bg-transparent border border-[#C48765]
+                hover:bg-[#C48765]/5
+                focus:outline-none focus:ring-2 
+                focus:ring-offset-2 focus:ring-[#C48765]
+                transition-all duration-200
+                disabled:opacity-50 disabled:cursor-not-allowed
+                flex items-center justify-center gap-2
+              `}
+            >
+              {timer > 0 ? (
+                <span>إعادة الإرسال في {timer} ثانية</span>
+              ) : (
+                <span>إعادة إرسال الرمز</span>
+              )}
+            </button>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-3 bg-white text-gray-500">شركة راف العقارية</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+            <Building2 className="h-4 w-4" />
+            <span>نظام إدارة الشركة</span>
+          </div>
         </div>
       </div>
-    </div>
-    </Suspense>
+    </main>
   )
 }

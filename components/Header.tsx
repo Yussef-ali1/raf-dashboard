@@ -133,8 +133,8 @@ export function Header() {
   }, [])
 
   return (
-    <header className="fixed top-0 right-0 left-0 bg-[#EFEDEA]  border-b z-50">
-      <div className="h-20   px-8 flex items-center justify-between">
+    <header className="fixed top-0 right-0 left-0 bg-[#EFEDEA] border-b z-50">
+      <div className="h-16 px-8 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Button
             variant="ghost"
