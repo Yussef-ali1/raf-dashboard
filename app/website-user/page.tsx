@@ -25,11 +25,17 @@ import { useSidebar } from '@/components/SidebarProvider'
 // Types
 interface WebsiteUser {
   _id: string
-  fullName: string
+  firstName: string
+  middleName: string
+  lastName: string
   email: string
-  phone: string
+  role: string
+  status: string
   createdAt: string
-  lastLogin: string
+  updatedAt: string
+  phoneNumber: string
+  fullName: string
+  lastLogin : string
 }
 
 // Main component
@@ -63,7 +69,7 @@ export default function WebsiteUserPage() {
       result = result.filter(user => 
         user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.phone.includes(searchTerm)
+        user.phoneNumber.includes(searchTerm)
       )
     }
     
@@ -82,93 +88,23 @@ export default function WebsiteUserPage() {
   const fetchUsers = async () => {
     setIsLoading(true)
     try {
-      // In a real application, you would fetch this data from your API
-      // For now, we'll use mock data
-      const mockUsers: WebsiteUser[] = [
-        {
-          _id: '1',
-          fullName: 'أحمد محمد',
-          email: 'ahmed@example.com',
-          phone: '0501234567',
-          createdAt: '2025-02-15T10:30:00',
-          lastLogin: '2025-03-13T14:20:00'
-        },
-        {
-          _id: '2',
-          fullName: 'سارة عبدالله',
-          email: 'sara@example.com',
-          phone: '0559876543',
-          createdAt: '2025-01-20T08:45:00',
-          lastLogin: '2025-03-12T09:15:00'
-        },
-        {
-          _id: '3',
-          fullName: 'محمد علي',
-          email: 'mohammed@example.com',
-          phone: '0561122334',
-          createdAt: '2025-02-28T16:20:00',
-          lastLogin: '2025-03-10T11:30:00'
-        },
-        {
-          _id: '4',
-          fullName: 'فاطمة أحمد',
-          email: 'fatima@example.com',
-          phone: '0505544332',
-          createdAt: '2025-03-05T12:10:00',
-          lastLogin: '2025-03-14T08:45:00'
-        },
-        {
-          _id: '5',
-          fullName: 'خالد عمر',
-          email: 'khaled@example.com',
-          phone: '0557788990',
-          createdAt: '2025-01-10T09:30:00',
-          lastLogin: '2025-02-28T15:20:00'
-        },
-        {
-          _id: '6',
-          fullName: 'نورة سعد',
-          email: 'noura@example.com',
-          phone: '0501234567',
-          createdAt: '2025-02-18T14:30:00',
-          lastLogin: '2025-03-13T10:15:00'
-        },
-        {
-          _id: '7',
-          fullName: 'عبدالله محمد',
-          email: 'abdullah@example.com',
-          phone: '0559988776',
-          createdAt: '2025-03-01T11:45:00',
-          lastLogin: '2025-03-14T09:30:00'
-        },
-        {
-          _id: '8',
-          fullName: 'ليلى حسن',
-          email: 'layla@example.com',
-          phone: '0502233445',
-          createdAt: '2025-02-10T13:20:00',
-          lastLogin: '2025-03-11T16:45:00'
-        },
-        {
-          _id: '9',
-          fullName: 'يوسف خالد',
-          email: 'yousef@example.com',
-          phone: '0558877665',
-          createdAt: '2025-01-25T09:10:00',
-          lastLogin: '2025-03-09T14:30:00'
-        },
-        {
-          _id: '10',
-          fullName: 'هند سعيد',
-          email: 'hind@example.com',
-          phone: '0503344556',
-          createdAt: '2025-02-22T11:40:00',
-          lastLogin: '2025-03-12T10:20:00'
-        }
-      ]
+      const response = await fetch('https://raf-backend.vercel.app/auth/getRafUser')
+      const data = await response.json()
       
-      setUsers(mockUsers)
-      setFilteredUsers(mockUsers)
+      // Transform the API data to match our needs
+      const transformedUsers = data.users.map((user: WebsiteUser) => ({
+        _id: user._id,
+        fullName: `${user.firstName} ${user.middleName} ${user.lastName}`.trim(),
+        email: user.email,
+        phoneNumber: user.phoneNumber, // Add if phone field becomes available in API
+        createdAt: user.createdAt,
+        lastLogin: user.updatedAt,
+        status: user.status,
+        role: user.role
+      }))
+  
+      setUsers(transformedUsers)
+      setFilteredUsers(transformedUsers)
     } catch (error) {
       console.error('Error fetching users:', error)
       toast.error('حدث خطأ أثناء تحميل بيانات المستخدمين')
@@ -193,9 +129,9 @@ export default function WebsiteUserPage() {
   const exportToExcel = () => {
     try {
       const exportData = filteredUsers.map(user => ({
-        'الاسم الكامل': user.fullName,
+        'الاسم الكامل': user.firstName + ' ' + user.middleName + ' ' + user.lastName,
         'البريد الإلكتروني': user.email,
-        'رقم الهاتف': user.phone,
+        'رقم الهاتف': user.phoneNumber,
         'تاريخ التسجيل': formatDate(user.createdAt),
         'آخر تسجيل دخول': formatDate(user.lastLogin)
       }))
@@ -321,7 +257,9 @@ export default function WebsiteUserPage() {
             <div className="bg-primary/10 text-primary p-4 rounded-full mb-3">
               <User className="h-12 w-12" />
             </div>
-            <h3 className="text-xl font-bold">{selectedUser.fullName}</h3>
+            <h3 className="text-xl font-bold">
+             {selectedUser.fullName}
+            </h3>
             <p className="text-gray-500">{selectedUser.email}</p>
           </div>
           
@@ -329,7 +267,7 @@ export default function WebsiteUserPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500">رقم الهاتف</p>
-                <p className="font-medium">{selectedUser.phone}</p>
+                <p className="font-medium">{selectedUser.phoneNumber}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">تاريخ التسجيل</p>
@@ -340,6 +278,10 @@ export default function WebsiteUserPage() {
             <div>
               <p className="text-sm text-gray-500">آخر تسجيل دخول</p>
               <p className="font-medium">{formatDate(selectedUser.lastLogin)}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">الحالة</p>
+              <p className="font-medium">{selectedUser.status}</p>
             </div>
           </div>
           
@@ -421,15 +363,17 @@ export default function WebsiteUserPage() {
             <CardContent>
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-right font-bold">المستخدم</TableHead>
-                      <TableHead className="text-right font-bold">البريد الإلكتروني</TableHead>
-                      <TableHead className="text-right font-bold">رقم الهاتف</TableHead>
-                      <TableHead className="text-right font-bold">تاريخ التسجيل</TableHead>
-                      <TableHead className="text-right font-bold">آخر تسجيل دخول</TableHead>
-                    </TableRow>
-                  </TableHeader>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-right font-bold">المستخدم</TableHead>
+                    <TableHead className="text-right font-bold">البريد الإلكتروني</TableHead>
+                    <TableHead className="text-right font-bold">الدور</TableHead>
+                    <TableHead className="text-right font-bold">تاريخ التسجيل</TableHead>
+                    <TableHead className="text-right font-bold">اخر تسجيل دخول</TableHead>
+
+                    <TableHead className="text-right font-bold">الحالة</TableHead>
+                  </TableRow>
+                </TableHeader>
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
@@ -463,7 +407,7 @@ export default function WebsiteUserPage() {
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <Phone className="h-4 w-4 text-gray-400" />
-                              {user.phone}
+                              {user.phoneNumber}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -473,6 +417,7 @@ export default function WebsiteUserPage() {
                             </div>
                           </TableCell>
                           <TableCell>{formatDate(user.lastLogin)}</TableCell>
+                          <TableCell>{user.status}</TableCell>
                         </TableRow>
                       ))
                     ) : (
