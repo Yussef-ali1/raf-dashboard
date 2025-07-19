@@ -23,6 +23,7 @@ const nextConfig = {
   },
   env: {
     API_BASE_URL: 'https://raf-backend.vercel.app/',
+       
   },
   experimental: {
     webpackBuildWorker: true,

@@ -38,34 +38,34 @@ const createUnitSchema = (lang: 'ar' | 'en') => z.object({
   area: z.number().min(1, {
     message: lang === 'ar' ? 'يجب إدخال المساحة' : 'Area is required'
   }),
-  rooms: z.number().min(1, {
+  rooms: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد الغرف' : 'Number of rooms is required'
   }),
-  bathrooms: z.number().min(1, {
+  bathrooms: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد الحمامات' : 'Number of bathrooms is required'
   }),
-  livingrooms: z.number().min(1, {
+  livingrooms: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد الصالات' : 'Number of living rooms is required'
   }),
-  elevators: z.number().min(1, {
+  elevators: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد المصاعد' : 'Number of elevators is required'
   }),
-  parking: z.number().min(1, {
+  parking: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد مواقف السيارات' : 'Parking spaces is required'
   }),
-  guard: z.number().min(1, {
+  guard: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد الحراس' : 'Number of guards is required'
   }),
-  waterTank: z.number().min(1, {
+  waterTank: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد خزانات المياه' : 'Water tanks count is required'
   }),
-  maidRoom: z.number().min(1, {
+  maidRoom: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد غرف الخدم' : 'Maid rooms count is required'
   }),
-  cameras: z.number().min(1, {
+  cameras: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال عدد الكاميرات' : 'Number of cameras is required'
   }),
-  floor: z.number().min(1, {
+  floor: z.number().min(0, {
     message: lang === 'ar' ? 'يجب إدخال رقم الطابق' : 'Floor number is required'
   }),
   location: z.string().min(3, {
@@ -725,12 +725,11 @@ const UnitForm = ({ lang, form, onSubmit, state, dispatch }: {
                         {...field}
                         type="number"
                         placeholder={lang === "ar" ? "الوقت بالدقائق" : "Time in minutes"}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
-
                 )}
         />
               </div>
