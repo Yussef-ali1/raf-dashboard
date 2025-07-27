@@ -27,27 +27,31 @@ async function getCurrentContactNumbers() {
     return contactCache
   }
   
-  const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error('Database timeout')), TIMEOUT_MS)
-  })
-  
-  const dbPromise = (async () => {
+  try {
+    console.log('Connecting to database for contact numbers...')
     await connectDB()
+    console.log('Database connected, fetching contact data...')
+    
     let contactData = await ContactNumbers.findOne().sort({ createdAt: -1 })
+    console.log('Contact data found:', contactData ? 'yes' : 'no')
     
     if (!contactData) {
+      console.log('No contact data found, creating default data...')
       // إنشاء بيانات افتراضية إذا لم تكن موجودة
       contactData = await ContactNumbers.create(defaultContactNumbers)
+      console.log('Default contact data created successfully')
     }
     
     // تحديث الـ cache
     contactCache = contactData
     cacheTimestamp = now
+    console.log('Contact data cached successfully')
     
     return contactData
-  })()
-  
-  return Promise.race([dbPromise, timeoutPromise])
+  } catch (error) {
+    console.error('Error in getCurrentContactNumbers:', error)
+    throw error
+  }
 }
 
 // دالة تسجيل التاريخ
@@ -333,15 +337,55 @@ export async function POST(request: NextRequest) {
 // PUT - تحديث جميع الأرقام مرة واحدة
 export async function PUT(request: NextRequest) {
   try {
-    await connectDB()
-    const body = await request.json()
+    console.log('PUT request received for contact numbers update')
     
-    // التحقق من وجود جميع الأرقام المطلوبة
-    if (!body.unifiedPhone || !body.marketingPhone || !body.floatingPhone || !body.floatingWhatsapp) {
+    // التحقق من نوع المحتوى
+    const contentType = request.headers.get('content-type')
+    if (!contentType || !contentType.includes('application/json')) {
+      console.log('Invalid content type:', contentType)
       return NextResponse.json(
         { 
           success: false, 
-          message: 'جميع الأرقام مطلوبة'
+          message: 'نوع المحتوى يجب أن يكون application/json'
+        },
+        { status: 400 }
+      )
+    }
+
+    // محاولة قراءة البيانات
+    let body
+    try {
+      body = await request.json()
+      console.log('Request body parsed successfully:', body)
+    } catch (parseError) {
+      console.error('Failed to parse request body:', parseError)
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'بيانات الطلب غير صحيحة'
+        },
+        { status: 400 }
+      )
+    }
+    
+    // التحقق من وجود جميع الأرقام المطلوبة
+    if (!body.unifiedPhone || !body.marketingPhone || !body.floatingPhone || !body.floatingWhatsapp) {
+      console.log('Missing required fields:', {
+        unifiedPhone: !!body.unifiedPhone,
+        marketingPhone: !!body.marketingPhone,
+        floatingPhone: !!body.floatingPhone,
+        floatingWhatsapp: !!body.floatingWhatsapp
+      })
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'جميع الأرقام مطلوبة',
+          missingFields: {
+            unifiedPhone: !body.unifiedPhone,
+            marketingPhone: !body.marketingPhone,
+            floatingPhone: !body.floatingPhone,
+            floatingWhatsapp: !body.floatingWhatsapp
+          }
         },
         { status: 400 }
       )
@@ -367,6 +411,7 @@ export async function PUT(request: NextRequest) {
     }
 
     if (errors.length > 0) {
+      console.log('Validation errors:', errors)
       return NextResponse.json(
         { 
           success: false, 
@@ -378,7 +423,32 @@ export async function PUT(request: NextRequest) {
     }
 
     // الحصول على البيانات الحالية
-    const currentData = await getCurrentContactNumbers()
+    let currentData
+    try {
+      currentData = await getCurrentContactNumbers()
+      console.log('Current data retrieved successfully')
+    } catch (currentDataError) {
+      console.error('Failed to get current data:', currentDataError)
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'فشل في جلب البيانات الحالية',
+          error: process.env.NODE_ENV === 'development' ? (currentDataError as Error).message : undefined
+        },
+        { status: 500 }
+      )
+    }
+    
+    if (!currentData || !currentData._id) {
+      console.log('No current data found or missing _id')
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'لم يتم العثور على بيانات التواصل'
+        },
+        { status: 404 }
+      )
+    }
     
     // تحديث جميع الأرقام
     const newData = {
@@ -388,31 +458,65 @@ export async function PUT(request: NextRequest) {
       floatingWhatsapp: formatMarketingNumber(body.floatingWhatsapp)
     }
 
-    const updatedData = await ContactNumbers.findByIdAndUpdate(
-      currentData._id,
-      newData,
-      { new: true, runValidators: true }
-    )
+    console.log('Updating data with:', newData)
+
+    let updatedData
+    try {
+      updatedData = await ContactNumbers.findByIdAndUpdate(
+        currentData._id,
+        newData,
+        { new: true, runValidators: true }
+      )
+      console.log('Data updated successfully')
+    } catch (updateError) {
+      console.error('Failed to update data:', updateError)
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'فشل في تحديث البيانات',
+          error: process.env.NODE_ENV === 'development' ? (updateError as Error).message : undefined
+        },
+        { status: 500 }
+      )
+    }
+
+    if (!updatedData) {
+      console.log('Update returned null data')
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'فشل في تحديث البيانات'
+        },
+        { status: 500 }
+      )
+    }
 
     // تسجيل التاريخ
-    await logHistory(
-      'update',
-      {
-        unifiedPhone: currentData.unifiedPhone,
-        marketingPhone: currentData.marketingPhone,
-        floatingPhone: currentData.floatingPhone,
-        floatingWhatsapp: currentData.floatingWhatsapp
-      },
-      {
-        unifiedPhone: updatedData.unifiedPhone,
-        marketingPhone: updatedData.marketingPhone,
-        floatingPhone: updatedData.floatingPhone,
-        floatingWhatsapp: updatedData.floatingWhatsapp
-      },
-      ['unifiedPhone', 'marketingPhone', 'floatingPhone', 'floatingWhatsapp'],
-      request
-    )
+    try {
+      await logHistory(
+        'update',
+        {
+          unifiedPhone: currentData.unifiedPhone,
+          marketingPhone: currentData.marketingPhone,
+          floatingPhone: currentData.floatingPhone,
+          floatingWhatsapp: currentData.floatingWhatsapp
+        },
+        {
+          unifiedPhone: updatedData.unifiedPhone,
+          marketingPhone: updatedData.marketingPhone,
+          floatingPhone: updatedData.floatingPhone,
+          floatingWhatsapp: updatedData.floatingWhatsapp
+        },
+        ['unifiedPhone', 'marketingPhone', 'floatingPhone', 'floatingWhatsapp'],
+        request
+      )
+      console.log('History logged successfully')
+    } catch (historyError) {
+      console.error('Error logging history:', historyError)
+      // لا نوقف العملية إذا فشل تسجيل التاريخ
+    }
 
+    console.log('Contact numbers update completed successfully')
     return NextResponse.json({
       success: true,
       message: 'تم تحديث جميع أرقام التواصل بنجاح',
@@ -425,10 +529,29 @@ export async function PUT(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error updating all contact numbers:', error)
+    
+    // إرجاع رسالة خطأ أكثر تفصيلاً
+    let errorMessage = 'خطأ في تحديث أرقام التواصل'
+    
+    if (error instanceof Error) {
+      if (error.message.includes('timeout')) {
+        errorMessage = 'انتهت مهلة الاتصال بقاعدة البيانات'
+      } else if (error.message.includes('validation')) {
+        errorMessage = 'بيانات غير صحيحة'
+      } else if (error.message.includes('connection')) {
+        errorMessage = 'مشكلة في الاتصال بقاعدة البيانات'
+      } else if (error.message.includes('ECONNREFUSED')) {
+        errorMessage = 'فشل في الاتصال بقاعدة البيانات'
+      } else if (error.message.includes('ENOTFOUND')) {
+        errorMessage = 'لا يمكن العثور على قاعدة البيانات'
+      }
+    }
+    
     return NextResponse.json(
       { 
         success: false, 
-        message: 'خطأ في تحديث أرقام التواصل'
+        message: errorMessage,
+        error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
       { status: 500 }
     )

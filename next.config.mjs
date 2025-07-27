@@ -34,7 +34,35 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.fallback = { fs: false }
     return config
-  }
+  },
+  // إعدادات إضافية للإنتاج
+  output: 'standalone',
+  poweredByHeader: false,
+  compress: true,
+  // تحسين الأداء
+  swcMinify: true,
+  // إعدادات الأمان
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
+    ]
+  },
 }
 
 // Load user config if exists

@@ -22,6 +22,9 @@ import {
 const menuItems = [
   { name: "الرئيسية", icon: LayoutDashboard, href: "/" },
   { name: "إدارة العقارات", icon: Building, href: "/category" },
+
+  { name: "المشاريع والوحدات", icon: Building, href: "/projects-units" },
+  { name: "حالات الوحدات السكنية", icon: Building, href: "/unit-status" },
   { name: "الأسئلة الشائعة", icon: FileQuestion, href: "/faq" },
   { name: "تقييمات العملاء", icon: Star, href: "/reviews" },
   { name: "المدونة", icon: BookOpen, href: "/blog" },
